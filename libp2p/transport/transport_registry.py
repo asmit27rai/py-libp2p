@@ -36,6 +36,10 @@ def _get_websocket_transport() -> Any:
 
     return WebsocketTransport
 
+def _get_webrtc_transport() -> Any:
+    from libp2p.transport.webrtc.transport import WebRTCTransport
+    return WebRTCTransport
+
 
 logger = logging.getLogger("libp2p.transport.registry")
 
@@ -78,6 +82,11 @@ def _is_valid_tcp_multiaddr(maddr: Multiaddr) -> bool:
 
     except Exception:
         return False
+    
+def _is_valid_webrtc_multiaddr(maddr: Multiaddr) -> bool:
+    """Validate WebRTC multiaddr structure."""
+    from libp2p.transport.webrtc.utils import is_valid_webrtc_multiaddr
+    return is_valid_webrtc_multiaddr(maddr)
 
 
 class TransportRegistry:
@@ -103,6 +112,10 @@ class TransportRegistry:
         QUICTransport = _get_quic_transport()
         self.register_transport("quic", QUICTransport)
         self.register_transport("quic-v1", QUICTransport)
+
+        WebRTCTransport = _get_webrtc_transport()
+        self.register_transport("webrtc", WebRTCTransport)
+        self.register_transport("webrtc-direct", WebRTCTransport)
 
     def register_transport(
         self, protocol: str, transport_class: type[ITransport]
@@ -247,6 +260,14 @@ def create_transport_for_multiaddr(
             if _is_valid_tcp_multiaddr(maddr):
                 registry = get_transport_registry()
                 return registry.create_transport("tcp", upgrader)
+            
+        elif "webrtc" in protocols or "webrtc-direct" in protocols:
+            if _is_valid_webrtc_multiaddr(maddr):
+                registry = get_transport_registry()
+                if "webrtc-direct" in protocols:
+                    return registry.create_transport("webrtc-direct", upgrader, **kwargs)
+                else:
+                    return registry.create_transport("webrtc", upgrader, **kwargs)
 
         # If no supported transport protocol found or structure is invalid, return None
         logger.warning(
