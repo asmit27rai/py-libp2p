@@ -1,6 +1,6 @@
-from libp2p.transport.exceptions import TransportError
+from libp2p.exceptions import BaseLibp2pError
 
-class WebRTCError(TransportError):
+class WebRTCError(BaseLibp2pError):
     """Base exception for WebRTC transport errors."""
     pass
 
@@ -14,4 +14,16 @@ class WebRTCSignalingError(WebRTCError):
 
 class WebRTCDataChannelError(WebRTCError):
     """Raised when DataChannel operations fail."""
+    pass
+
+class WebRTCTimeoutError(WebRTCError):
+    """Raised when WebRTC operations timeout."""
+    pass
+
+class WebRTCIceError(WebRTCError):
+    """Raised when ICE gathering or connection fails."""
+    pass
+
+class WebRTCSignalingChannelError(WebRTCSignalingError):
+    """Raised when signaling channel operations fail."""
     pass

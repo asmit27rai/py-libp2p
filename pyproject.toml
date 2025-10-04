@@ -55,7 +55,7 @@ Homepage = "https://github.com/libp2p/py-libp2p"
 [project.scripts]
 chat-demo = "examples.chat.chat:main"
 echo-demo = "examples.echo.echo:main"
-echo-quic-demo="examples.echo.echo_quic:main"
+echo-quic-demo = "examples.echo.echo_quic:main"
 ping-demo = "examples.ping.ping:main"
 identify-demo = "examples.identify.identify:main"
 identify-push-demo = "examples.identify_push.identify_push_demo:run_main"
@@ -102,11 +102,7 @@ test = [
     "pytest-xdist>=2.4.0",
 ]
 
-webrtc = [
-    "aiortc>=1.6.0",
-    "aioice>=0.9.0", 
-    "av>=10.0.0",
-]
+webrtc = ["aiortc>=1.6.0", "aioice>=0.9.0", "av>=10.0.0", "websockets>=11.0.0"]
 
 [tool.setuptools]
 include-package-data = true
