@@ -390,11 +390,3 @@ class WebRTCTransport(ITransport):
         # TODO: Return circuit relay addresses that can be used for WebRTC signaling
         return []
     
-    def get_transport_manager(self) -> Any:
-        """Get transport manager from host."""
-        if hasattr(self.host, 'get_transport_manager'):
-            return self.host.get_transport_manager()
-        elif hasattr(self.host, '_network'):
-            network = self.host._network
-            return getattr(network, 'transport_manager', None)
-        return None

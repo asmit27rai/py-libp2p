@@ -68,15 +68,11 @@ class WebRTCPeerListener(IListener):
         
         self._transport_listening_handler = on_transport_listening
         
-        # In a real implementation, you'd register this with the host's event system
-        # For now, we'll check for circuit addresses in get_addrs()
 
     def _on_transport_listening(self, event_data: Any) -> None:
         """Handle transport listening event - generate WebRTC addresses."""
         logger.debug("Transport listening event received")
         
-        # This would filter circuit addresses and create WebRTC addresses
-        # The actual implementation depends on the host's event system
         
     async def close(self) -> None:
         """Stop listening and close the listener."""
@@ -99,7 +95,7 @@ class WebRTCPeerListener(IListener):
         """
         Get listener addresses as WebRTC multiaddrs.
         
-        Following the JS pattern: find circuit addresses and encapsulate 
+        find circuit addresses and encapsulate 
         them with '/webrtc' protocol.
         """
         if not self._is_listening:
@@ -112,7 +108,6 @@ class WebRTCPeerListener(IListener):
             if hasattr(self.host, 'get_transport_manager'):
                 transport_manager = self.host.get_transport_manager()
             else:
-                # Fallback - try to get from network
                 network = getattr(self.host, '_network', None)
                 transport_manager = getattr(network, 'transport_manager', None)
             
