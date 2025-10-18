@@ -2,7 +2,17 @@ import logging
 from typing import Any, Callable
 from multiaddr import Multiaddr
 import trio
-from libp2p.abc import IHost, IListener, ITransportManager
+try:
+    from libp2p.abc import IHost, IListener, ITransportManager
+except Exception:
+    class IHost:
+        pass
+
+    class IListener:
+        pass
+
+    class ITransportManager:
+        pass
 from libp2p.custom_types import THandler
 from ..constants import WEBRTC_PROTOCOL
 
