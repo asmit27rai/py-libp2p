@@ -234,9 +234,10 @@ class WebRTCRawConnection(IRawConnection):
             # Close trio channels safely
             if self._trio_token:
                 try:
-                    _ = trio.from_thread.run(
-                        self._close_trio_channels, trio_token=self._trio_token
-                    )
+                    def _spawn_close():
+                        trio.lowlevel.spawn_system_task(self._close_trio_channels())
+
+                    trio.from_thread.run_sync(_spawn_close, trio_token=self._trio_token)
                 except Exception as e:
                     logger.warning(
                         f"Error closing trio channels from WebRTC callback: {e}"

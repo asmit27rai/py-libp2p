@@ -143,7 +143,17 @@ class WebRTCAsyncBridge:
     async def close_data_channel(self, data_channel: RTCDataChannel) -> None:
         """Close data channel with proper async bridging"""
         try:
-            await aio_as_trio(data_channel.close)
+            close_attr = getattr(data_channel, "close", None)
+            if close_attr is None:
+                logger.debug("Data channel has no close attribute")
+            else:
+                result = close_attr()
+                if hasattr(result, "__await__"):
+                    try:
+                        await aio_as_trio(result)
+                    except Exception:
+                        await aio_as_trio(close_attr)
+
             logger.debug("Successfully closed data channel")
         except Exception as e:
             logger.error(f"Failed to close data channel: {e}")
