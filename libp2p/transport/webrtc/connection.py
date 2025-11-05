@@ -235,7 +235,7 @@ class WebRTCRawConnection(IRawConnection):
             if self._trio_token:
                 try:
                     def _spawn_close():
-                        trio.lowlevel.spawn_system_task(self._close_trio_channels())
+                        trio.lowlevel.spawn_system_task(self._close_trio_channels)
 
                     trio.from_thread.run_sync(_spawn_close, trio_token=self._trio_token)
                 except Exception as e:

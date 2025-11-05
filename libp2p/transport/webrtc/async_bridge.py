@@ -151,8 +151,14 @@ class WebRTCAsyncBridge:
                 if hasattr(result, "__await__"):
                     try:
                         await aio_as_trio(result)
-                    except Exception:
-                        await aio_as_trio(close_attr)
+                    except Exception as e:
+                        logger.exception(f"Error during async close: {e}")
+                        try:
+                            logger.info("Attempting fallback close")
+                            result = close_attr()
+                        except Exception as fallback_e:
+                            logger.exception(f"Fallback close also failed: {fallback_e}")
+                            raise RuntimeError(f"Close failed: {e}. Fallback: {fallback_e}") from e
 
             logger.debug("Successfully closed data channel")
         except Exception as e:
