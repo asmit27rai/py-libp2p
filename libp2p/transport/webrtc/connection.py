@@ -1,29 +1,21 @@
 import json
 import logging
-from typing import (
-    Any,
-    cast,
-)
+from typing import Any, cast
 
 from aiortc import (
     RTCDataChannel,
     RTCPeerConnection,
 )
+from multiaddr import Multiaddr
 import trio
 from trio import (
     MemoryReceiveChannel,
     MemorySendChannel,
 )
 
-from libp2p.abc import (
-    IMuxedConn,
-    INetStream,
-    IRawConnection,
-)
+from libp2p.abc import IMuxedConn, INetStream, IRawConnection
 from libp2p.custom_types import TProtocol
-from libp2p.peer.id import (
-    ID,
-)
+from libp2p.peer.id import ID
 
 from .async_bridge import WebRTCAsyncBridge
 
@@ -145,6 +137,11 @@ class WebRTCRawConnection(IRawConnection):
         self._closed = False
         self.is_initiator = is_initiator
 
+        self.local_multiaddr: Multiaddr | None = None
+        self.remote_multiaddr: Multiaddr | None = None
+        self.local_fingerprint: str | None = None
+        self.remote_fingerprint: str | None = None
+
         # Stream muxing
         self._streams: dict[int, WebRTCStream] = {}
         self._next_stream_id: int = (
@@ -234,10 +231,9 @@ class WebRTCRawConnection(IRawConnection):
             # Close trio channels safely
             if self._trio_token:
                 try:
-                    def _spawn_close():
-                        trio.lowlevel.spawn_system_task(self._close_trio_channels)
-
-                    trio.from_thread.run_sync(_spawn_close, trio_token=self._trio_token)
+                    _ = trio.from_thread.run(
+                        self._close_trio_channels, trio_token=self._trio_token
+                    )
                 except Exception as e:
                     logger.warning(
                         f"Error closing trio channels from WebRTC callback: {e}"
