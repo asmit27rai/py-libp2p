@@ -1100,23 +1100,16 @@ class WebRTCDirectTransport(ITransport):
                     type(muxed_conn).__name__,
                 )
 
-                if isinstance(muxed_conn, Yamux):
-                    logger.info(
-                        "🟢 Starting listener yamux read loop for %s",
-                        remote_peer_id,
-                    )
-                    try:
-                        await muxed_conn.start()
-                        logger.info(
-                            "✅ Listener yamux read loop started for %s", remote_peer_id
-                        )
-                    except Exception as start_exc:
-                        logger.error(
-                            "❌ Failed to start listener yamux for %s: %s",
-                            remote_peer_id,
-                            start_exc,
-                            exc_info=True,
-                        )
+                logger.info(
+                    "🟢 Listener registering muxed conn with swarm for %s",
+                    remote_peer_id,
+                )
+                await swarm.add_conn(muxed_conn)
+                logger.info(
+                    "✅ Listener swarm.add_conn() completed for %s - "
+                    "stream accept loop is now running",
+                    remote_peer_id,
+                )
             except trio.TooSlowError:
                 logger.error(
                     "Listener muxer negotiation timed out after %.1fs "
