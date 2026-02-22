@@ -1017,9 +1017,7 @@ class WebRTCRawConnection(IRawConnection):
                     with trio.move_on_after(MUXER_READ_TIMEOUT) as read_scope:
                         data = await self.receive_channel.receive()
                     if read_scope.cancelled_caught:
-                        ch_state = getattr(
-                            self.data_channel, "readyState", "unknown"
-                        )
+                        ch_state = getattr(self.data_channel, "readyState", "unknown")
                         conn_state = getattr(
                             self.peer_connection, "connectionState", "unknown"
                         )
@@ -1033,8 +1031,7 @@ class WebRTCRawConnection(IRawConnection):
                             conn_state,
                         )
                         raise trio.TooSlowError(
-                            f"WebRTC read timed out after "
-                            f"{MUXER_READ_TIMEOUT}s"
+                            f"WebRTC read timed out after {MUXER_READ_TIMEOUT}s"
                         )
                     self._read_buffer = data
                 except trio.TooSlowError:

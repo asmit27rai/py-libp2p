@@ -15,7 +15,6 @@ from libp2p.abc import IHost, IListener, IRawConnection, ISecureConn, ITransport
 from libp2p.custom_types import THandler
 from libp2p.peer.id import ID
 from libp2p.relay.circuit_v2.nat import ReachabilityChecker
-from libp2p.stream_muxer.yamux.yamux import Yamux
 from libp2p.transport.exceptions import OpenConnectionError
 
 from ..async_bridge import get_webrtc_bridge
