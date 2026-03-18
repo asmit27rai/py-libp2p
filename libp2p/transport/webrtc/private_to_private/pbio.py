@@ -11,7 +11,7 @@ Reference:
 
 import asyncio
 
-from .pb.stream_message_pb2 import Message
+from .pb.stream_message_pb2 import StreamMessage
 
 
 class VarintFrameReader:
@@ -32,7 +32,7 @@ class VarintFrameReader:
         self,
         read_func,
         timeout: float | None = None,
-    ) -> Message | None:
+    ) -> StreamMessage | None:
         """
         Read a single varint-length-delimited protobuf message.
 
@@ -41,7 +41,7 @@ class VarintFrameReader:
             timeout: Optional read timeout in seconds
 
         Returns:
-            Deserialized Message or None if EOF
+            Deserialized StreamMessage or None if EOF
 
         Raises:
             ValueError: If message is too large
@@ -67,7 +67,7 @@ class VarintFrameReader:
                 raise ValueError(f"Expected {length} bytes, got {len(message_bytes)}")
 
             # Deserialize
-            msg = Message()
+            msg = StreamMessage()
             msg.ParseFromString(message_bytes)
             return msg
 
@@ -154,7 +154,7 @@ class VarintFrameWriter:
 
     async def write_message(
         self,
-        msg: Message,
+        msg: StreamMessage,
         write_func,
         timeout: float | None = None,
     ) -> None:
@@ -162,7 +162,7 @@ class VarintFrameWriter:
         Write a varint-length-delimited protobuf message.
 
         Args:
-            msg: Message to write
+            msg: StreamMessage to write
             write_func: Async function that writes bytes to the data channel
             timeout: Optional write timeout in seconds
 

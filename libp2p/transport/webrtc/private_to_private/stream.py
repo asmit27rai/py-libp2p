@@ -18,7 +18,7 @@ import time
 
 from libp2p.abc import INetStream
 
-from .pb.stream_message_pb2 import Message
+from .pb.stream_message_pb2 import StreamMessage
 from .pbio import VarintFrameReader, VarintFrameWriter, encode_varint
 
 logger = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ class WebRTCStream(INetStream):
         self._state_lock = asyncio.Lock()
 
         # Buffer for partial reads
-        self._next_message: Message | None = None
+        self._next_message: StreamMessage | None = None
         self._read_buffer = bytearray()
         self._read_queue: asyncio.Queue = asyncio.Queue()
 
@@ -217,7 +217,7 @@ class WebRTCStream(INetStream):
                 chunk = data[offset : offset + MAX_SEND_MESSAGE_SIZE - PROTO_OVERHEAD]
                 offset += len(chunk)
 
-                msg = Message()
+                msg = StreamMessage()
                 msg.message = chunk
 
                 await self._write_message(msg)
@@ -231,8 +231,8 @@ class WebRTCStream(INetStream):
                 return
 
             # Send FIN to signal no more data
-            msg = Message()
-            msg.flag = Message.FIN
+            msg = StreamMessage()
+            msg.flag = StreamMessage.FIN
             await self._write_message(msg)
 
             async with self._writer_lock:
@@ -258,8 +258,8 @@ class WebRTCStream(INetStream):
                 return
 
             # Send RESET
-            msg = Message()
-            msg.flag = Message.RESET
+            msg = StreamMessage()
+            msg.flag = StreamMessage.RESET
             msg.errorCode = error_code
             try:
                 await self._write_message(msg)
@@ -276,13 +276,13 @@ class WebRTCStream(INetStream):
 
             await self._cleanup()
 
-    async def _read_message(self) -> Message | None:
+    async def _read_message(self) -> StreamMessage | None:
         """
         Read a single protobuf message from the data channel.
         Handles varint-length-delimited encoding.
 
         Returns:
-            Message or None if EOF
+            StreamMessage or None if EOF
 
         """
         try:
@@ -301,13 +301,13 @@ class WebRTCStream(INetStream):
         except asyncio.CancelledError:
             raise
 
-    async def _write_message(self, msg: Message) -> None:
+    async def _write_message(self, msg: StreamMessage) -> None:
         """
         Write a single protobuf message to the data channel.
         Uses varint-length-delimited encoding.
 
         Args:
-            msg: Message to write
+            msg: StreamMessage to write
 
         """
         try:
@@ -348,7 +348,7 @@ class WebRTCStream(INetStream):
             logger.error(f"Failed to send data on stream {self.stream_id}: {e}")
             raise
 
-    async def _process_incoming_flag(self, msg: Message) -> None:
+    async def _process_incoming_flag(self, msg: StreamMessage) -> None:
         """
         Process control flags on incoming message.
 
@@ -365,8 +365,8 @@ class WebRTCStream(INetStream):
                     self._receive_state = ReceiveState.DATA_READ
 
                 # Send FIN_ACK
-                ack_msg = Message()
-                ack_msg.flag = Message.FIN_ACK
+                ack_msg = StreamMessage()
+                ack_msg.flag = StreamMessage.FIN_ACK
                 try:
                     await self._write_message(ack_msg)
                 except Exception as e:

@@ -24,15 +24,15 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14stream_message.proto\x12\x19webrtc.private_to_private\"\x9f\x01\n\x07Message\x12\x35\n\x04\x66lag\x18\x01 \x01(\x0e\x32\'.webrtc.private_to_private.Message.Flag\x12\x0f\n\x07message\x18\x02 \x01(\x0c\x12\x11\n\terrorCode\x18\x03 \x01(\r\"9\n\x04\x46lag\x12\x07\n\x03\x46IN\x10\x00\x12\x10\n\x0cSTOP_SENDING\x10\x01\x12\t\n\x05RESET\x10\x02\x12\x0b\n\x07\x46IN_ACK\x10\x03')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x14stream_message.proto\x12\x19webrtc.private_to_private\"\xab\x01\n\rStreamMessage\x12;\n\x04\x66lag\x18\x01 \x01(\x0e\x32-.webrtc.private_to_private.StreamMessage.Flag\x12\x0f\n\x07message\x18\x02 \x01(\x0c\x12\x11\n\terrorCode\x18\x03 \x01(\r\"9\n\x04\x46lag\x12\x07\n\x03\x46IN\x10\x00\x12\x10\n\x0cSTOP_SENDING\x10\x01\x12\t\n\x05RESET\x10\x02\x12\x0b\n\x07\x46IN_ACK\x10\x03')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'stream_message_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_MESSAGE']._serialized_start=52
-  _globals['_MESSAGE']._serialized_end=211
-  _globals['_MESSAGE_FLAG']._serialized_start=154
-  _globals['_MESSAGE_FLAG']._serialized_end=211
+  _globals['_STREAMMESSAGE']._serialized_start=52
+  _globals['_STREAMMESSAGE']._serialized_end=223
+  _globals['_STREAMMESSAGE_FLAG']._serialized_start=166
+  _globals['_STREAMMESSAGE_FLAG']._serialized_end=223
 # @@protoc_insertion_point(module_scope)

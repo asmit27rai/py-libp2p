@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package webrtc.private_to_private;
 
-message Message {
+message StreamMessage {
   enum Flag {
     // The sender will no longer send messages on the stream.
     FIN = 0;

@@ -2,7 +2,11 @@
 Private-to-private WebRTC transport implementation.
 Uses circuit relays for signaling and establishes direct WebRTC connections.
 """
-from .transport import WebRTCTransport
+
+try:
+    from .transport import WebRTCTransport
+except ImportError:
+    WebRTCTransport = None
 
 try:
     from ..multiaddr_protocols import register_webrtc_protocols
